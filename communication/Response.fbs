@@ -1,0 +1,24 @@
+namespace Seeder;
+
+enum HelloRequestResult: byte {
+    REGISTERED_SUCCESSFULLY,
+    ALREADY_REGISTERED
+}
+
+table HelloResponse {
+    result: HelloRequestResult;
+    availability_interval: byte;        // Hey Client! Please send me your availability based on this interval.
+}
+
+table GetPeersResponse {
+    active_peers: [string];
+}
+
+union ResponseType { HelloResponse, GetPeersResponse}
+
+table Response {
+    id: ushort;
+    response: ResponseType;
+}
+
+root_type Response;

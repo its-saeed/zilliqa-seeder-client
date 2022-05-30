@@ -1,0 +1,23 @@
+namespace Seeder;
+
+table HelloRequest {
+    address: string;
+}
+
+table PeerStatusRequest {
+    address: string;
+    peer_current_connections: [string];
+}
+
+struct GetPeersRequest {
+    number_of_peers: byte;
+}
+
+union RequestType { HelloRequest, PeerStatusRequest, GetPeersRequest }
+
+table Request {
+    id: ushort;
+    request: RequestType;
+}
+
+root_type Request;
