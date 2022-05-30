@@ -6,7 +6,8 @@
 #include <vector>
 #include <map>
 
-class Peer;
+class PeerWidget;
+class QVBoxLayout;
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class Widget; }
@@ -21,26 +22,14 @@ public:
 	~Widget();
 
 private slots:
-	void on_btn_send_hello_clicked();
-	void on_btn_get_peers_clicked();
-	void on_btn_add_to_connected_clicked();
-	void on_btn_remove_from_connected_clicked();
 	void on_btn_add_peer_clicked();
-	void on_btn_send_status_clicked();
-
 	void log_it(const QString& string);
-	void update_peer_connections_widget();
-
-	void on_cmb_peers_currentIndexChanged(const QString &arg1);
-
-	void on_btn_send_bye_clicked();
-
-	void on_btn_get_alive_peers_clicked();
+	void on_btn_get_alive_since_clicked();
 
 private:
-	void parse_response(const QByteArray& response_raw);
-	Peer* get_selected_peer();
 	Ui::Widget *ui;
-	std::map<std::string, Peer*> peers;
+	QWidget* peers_widget;
+	QVBoxLayout* peers_layout;
+	std::map<std::string, PeerWidget*> peers;
 };
 #endif // WIDGET_H

@@ -24,9 +24,11 @@ public:
 	const std::vector<std::string>& get_elited_peers() const noexcept;
 	void set_last_alive(const QDateTime& last_alive) {this->last_alive = last_alive;}
 	const QDateTime& get_last_alive() const noexcept { return last_alive;}
+	const std::string& get_address() const noexcept { return address; }
 
 signals:
 	void log_it(const QString& log);
+	void registered();
 	void elited_peers_changed();
 
 private slots:

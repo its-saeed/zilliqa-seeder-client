@@ -1,0 +1,238 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>PeerWidget</class>
+ <widget class="QWidget" name="PeerWidget">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>722</width>
+    <height>316</height>
+   </rect>
+  </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <widget class="QWidget" name="widget" native="true">
+     <property name="styleSheet">
+      <string notr="true"/>
+     </property>
+     <layout class="QHBoxLayout" name="horizontalLayout">
+      <item>
+       <widget class="QLabel" name="lbl_client_name">
+        <property name="styleSheet">
+         <string notr="true">font: 18pt &quot;Roboto&quot;;
+color: rgb(81, 81, 81);</string>
+        </property>
+        <property name="text">
+         <string>CLIENT_NAME</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="lbl_registered">
+        <property name="styleSheet">
+         <string notr="true">
+font: 87 8pt &quot;Roboto Black&quot;;
+color: rgb(0, 170, 0);</string>
+        </property>
+        <property name="text">
+         <string>✅registered</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="lbl_unregistered">
+        <property name="styleSheet">
+         <string notr="true">font: 10pt &quot;Roboto&quot;;
+color: rgb(255, 0, 0);</string>
+        </property>
+        <property name="text">
+         <string>❌ unregistered</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="lbl_not_sync">
+        <property name="toolTip">
+         <string>Click send status to server</string>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">font: 10pt &quot;Roboto&quot;;
+color:rgb(255, 170, 0);</string>
+        </property>
+        <property name="text">
+         <string>⚠️ Not sync</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="Line" name="line_4">
+        <property name="orientation">
+         <enum>Qt::Vertical</enum>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="lbl_last_alive">
+        <property name="styleSheet">
+         <string notr="true">color: rgb(167, 167, 167);</string>
+        </property>
+        <property name="text">
+         <string>last alive</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="Line" name="line_3">
+        <property name="orientation">
+         <enum>Qt::Vertical</enum>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="lbl_connections">
+        <property name="styleSheet">
+         <string notr="true">color: rgb(167, 167, 167);</string>
+        </property>
+        <property name="text">
+         <string>Connected to 0 peers</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <spacer name="horizontalSpacer">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="Line" name="line">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout_2">
+     <item>
+      <widget class="QPushButton" name="btn_send_hello">
+       <property name="text">
+        <string>Send Hello</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="btn_send_bye">
+       <property name="text">
+        <string>Send Bye</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="btn_get_peers">
+       <property name="text">
+        <string>Get Peers</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout_3">
+     <item>
+      <widget class="QLabel" name="label_4">
+       <property name="text">
+        <string>Last alive:</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QDateTimeEdit" name="dte_last_alive"/>
+     </item>
+     <item>
+      <widget class="QPushButton" name="btn_send_status">
+       <property name="text">
+        <string>Send status to server</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <layout class="QGridLayout" name="gridLayout">
+     <item row="0" column="0">
+      <widget class="QLabel" name="label_5">
+       <property name="text">
+        <string>Available Peers:</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="1">
+      <widget class="QComboBox" name="cmb_available_peers"/>
+     </item>
+     <item row="0" column="2">
+      <widget class="QPushButton" name="btn_add_peer_to_connections">
+       <property name="text">
+        <string>Add Peer to connections</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="0">
+      <widget class="QLabel" name="label_6">
+       <property name="text">
+        <string>Connections:</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="1">
+      <widget class="QComboBox" name="cmb_connections"/>
+     </item>
+     <item row="1" column="2">
+      <widget class="QPushButton" name="btn_remove_peers_from_connections">
+       <property name="text">
+        <string>Remove Peer from connections</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <widget class="Line" name="line_2">
+     <property name="styleSheet">
+      <string notr="true">color: rgb(199, 199, 199);</string>
+     </property>
+     <property name="frameShadow">
+      <enum>QFrame::Plain</enum>
+     </property>
+     <property name="lineWidth">
+      <number>3</number>
+     </property>
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

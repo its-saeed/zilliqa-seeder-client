@@ -10,14 +10,17 @@ CONFIG += c++11
 
 SOURCES += \
     Peer.cpp \
+    PeerWidget.cpp \
     main.cpp \
     widget.cpp
 
 HEADERS += \
     Peer.h \
+    PeerWidget.h \
     widget.h
 
 FORMS += \
+    PeerWidget.ui \
     widget.ui
 
 INCLUDEPATH += communication/

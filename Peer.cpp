@@ -38,11 +38,12 @@ void Peer::parse_response(const QByteArray &response_buffer)
 	{
 		auto hello_response = response->response_as_HelloResponse();
 		log_it(QString("HELLO result: %1").arg(hello_result_to_string(hello_response->result())));
-//		if (hello_response->result() == Seeder::HelloRequestResult_REGISTERED_SUCCESSFULLY) {
+		if (hello_response->result() == Seeder::HelloRequestResult_REGISTERED_SUCCESSFULLY) {
+			emit registered();
 //			const int send_status_interval = hello_response->availability_interval();
 //			timer->setInterval(send_status_interval * 1000);
 //			timer->start();
-//		}
+		}
 		break;
 	}
 	case Seeder::ResponseType::ResponseType_GetElitedPeersResponse:
