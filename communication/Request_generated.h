@@ -11,6 +11,9 @@ namespace Seeder {
 struct HelloRequest;
 struct HelloRequestBuilder;
 
+struct ByeRequest;
+struct ByeRequestBuilder;
+
 struct PeerStatusRequest;
 struct PeerStatusRequestBuilder;
 
@@ -24,33 +27,36 @@ enum RequestType : uint8_t {
   RequestType_HelloRequest = 1,
   RequestType_PeerStatusRequest = 2,
   RequestType_GetPeersRequest = 3,
+  RequestType_ByeRequest = 4,
   RequestType_MIN = RequestType_NONE,
-  RequestType_MAX = RequestType_GetPeersRequest
+  RequestType_MAX = RequestType_ByeRequest
 };
 
-inline const RequestType (&EnumValuesRequestType())[4] {
+inline const RequestType (&EnumValuesRequestType())[5] {
   static const RequestType values[] = {
     RequestType_NONE,
     RequestType_HelloRequest,
     RequestType_PeerStatusRequest,
-    RequestType_GetPeersRequest
+    RequestType_GetPeersRequest,
+    RequestType_ByeRequest
   };
   return values;
 }
 
 inline const char * const *EnumNamesRequestType() {
-  static const char * const names[5] = {
+  static const char * const names[6] = {
     "NONE",
     "HelloRequest",
     "PeerStatusRequest",
     "GetPeersRequest",
+    "ByeRequest",
     nullptr
   };
   return names;
 }
 
 inline const char *EnumNameRequestType(RequestType e) {
-  if (flatbuffers::IsOutRange(e, RequestType_NONE, RequestType_GetPeersRequest)) return "";
+  if (flatbuffers::IsOutRange(e, RequestType_NONE, RequestType_ByeRequest)) return "";
   const size_t index = static_cast<size_t>(e);
   return EnumNamesRequestType()[index];
 }
@@ -69,6 +75,10 @@ template<> struct RequestTypeTraits<Seeder::PeerStatusRequest> {
 
 template<> struct RequestTypeTraits<Seeder::GetPeersRequest> {
   static const RequestType enum_value = RequestType_GetPeersRequest;
+};
+
+template<> struct RequestTypeTraits<Seeder::ByeRequest> {
+  static const RequestType enum_value = RequestType_ByeRequest;
 };
 
 bool VerifyRequestType(flatbuffers::Verifier &verifier, const void *obj, RequestType type);
@@ -138,6 +148,57 @@ inline flatbuffers::Offset<HelloRequest> CreateHelloRequestDirect(
     const char *address = nullptr) {
   auto address__ = address ? _fbb.CreateString(address) : 0;
   return Seeder::CreateHelloRequest(
+      _fbb,
+      address__);
+}
+
+struct ByeRequest FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
+  typedef ByeRequestBuilder Builder;
+  enum FlatBuffersVTableOffset FLATBUFFERS_VTABLE_UNDERLYING_TYPE {
+    VT_ADDRESS = 4
+  };
+  const flatbuffers::String *address() const {
+    return GetPointer<const flatbuffers::String *>(VT_ADDRESS);
+  }
+  bool Verify(flatbuffers::Verifier &verifier) const {
+    return VerifyTableStart(verifier) &&
+           VerifyOffset(verifier, VT_ADDRESS) &&
+           verifier.VerifyString(address()) &&
+           verifier.EndTable();
+  }
+};
+
+struct ByeRequestBuilder {
+  typedef ByeRequest Table;
+  flatbuffers::FlatBufferBuilder &fbb_;
+  flatbuffers::uoffset_t start_;
+  void add_address(flatbuffers::Offset<flatbuffers::String> address) {
+    fbb_.AddOffset(ByeRequest::VT_ADDRESS, address);
+  }
+  explicit ByeRequestBuilder(flatbuffers::FlatBufferBuilder &_fbb)
+        : fbb_(_fbb) {
+    start_ = fbb_.StartTable();
+  }
+  flatbuffers::Offset<ByeRequest> Finish() {
+    const auto end = fbb_.EndTable(start_);
+    auto o = flatbuffers::Offset<ByeRequest>(end);
+    return o;
+  }
+};
+
+inline flatbuffers::Offset<ByeRequest> CreateByeRequest(
+    flatbuffers::FlatBufferBuilder &_fbb,
+    flatbuffers::Offset<flatbuffers::String> address = 0) {
+  ByeRequestBuilder builder_(_fbb);
+  builder_.add_address(address);
+  return builder_.Finish();
+}
+
+inline flatbuffers::Offset<ByeRequest> CreateByeRequestDirect(
+    flatbuffers::FlatBufferBuilder &_fbb,
+    const char *address = nullptr) {
+  auto address__ = address ? _fbb.CreateString(address) : 0;
+  return Seeder::CreateByeRequest(
       _fbb,
       address__);
 }
@@ -234,6 +295,9 @@ struct Request FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   const Seeder::GetPeersRequest *request_as_GetPeersRequest() const {
     return request_type() == Seeder::RequestType_GetPeersRequest ? static_cast<const Seeder::GetPeersRequest *>(request()) : nullptr;
   }
+  const Seeder::ByeRequest *request_as_ByeRequest() const {
+    return request_type() == Seeder::RequestType_ByeRequest ? static_cast<const Seeder::ByeRequest *>(request()) : nullptr;
+  }
   bool Verify(flatbuffers::Verifier &verifier) const {
     return VerifyTableStart(verifier) &&
            VerifyField<uint16_t>(verifier, VT_ID) &&
@@ -254,6 +318,10 @@ template<> inline const Seeder::PeerStatusRequest *Request::request_as<Seeder::P
 
 template<> inline const Seeder::GetPeersRequest *Request::request_as<Seeder::GetPeersRequest>() const {
   return request_as_GetPeersRequest();
+}
+
+template<> inline const Seeder::ByeRequest *Request::request_as<Seeder::ByeRequest>() const {
+  return request_as_ByeRequest();
 }
 
 struct RequestBuilder {
@@ -307,6 +375,10 @@ inline bool VerifyRequestType(flatbuffers::Verifier &verifier, const void *obj, 
     }
     case RequestType_GetPeersRequest: {
       return verifier.Verify<Seeder::GetPeersRequest>(static_cast<const uint8_t *>(obj), 0);
+    }
+    case RequestType_ByeRequest: {
+      auto ptr = reinterpret_cast<const Seeder::ByeRequest *>(obj);
+      return verifier.VerifyTable(ptr);
     }
     default: return true;
   }

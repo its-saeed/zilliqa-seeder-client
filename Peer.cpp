@@ -155,6 +155,24 @@ void Peer::send_status()
 	write_data(buffer, size, request_id);
 }
 
+void Peer::send_goodbye()
+{
+	const uint16_t request_id = qrand() & 0xffff;
+	flatbuffers::FlatBufferBuilder builder(1024);
+	auto address_string = builder.CreateString(address);
+	auto req = CreateByeRequest(builder, address_string);
+	RequestBuilder request_builder(builder);
+	request_builder.add_id(request_id);
+	request_builder.add_request_type(RequestType_ByeRequest);
+	request_builder.add_request(req.Union());
+	auto orc = request_builder.Finish();
+	builder.Finish(orc);
+	const uint8_t* buffer = builder.GetBufferPointer();
+	const size_t size = builder.GetSize();
+
+	write_data(buffer, size, request_id);
+}
+
 void Peer::add_to_connection(const std::string &connection)
 {
 	connections.push_back(connection);

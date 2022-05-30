@@ -4,6 +4,10 @@ table HelloRequest {
     address: string;
 }
 
+table ByeRequest {
+    address: string;
+}
+
 table PeerStatusRequest {
     address: string;
     peer_current_connections: [string];
@@ -13,7 +17,7 @@ struct GetPeersRequest {
     number_of_peers: byte;
 }
 
-union RequestType { HelloRequest, PeerStatusRequest, GetPeersRequest }
+union RequestType { HelloRequest, PeerStatusRequest, GetPeersRequest, ByeRequest }
 
 table Request {
     id: ushort;

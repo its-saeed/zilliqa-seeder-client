@@ -33,6 +33,8 @@ private slots:
 
 	void on_cmb_peers_currentIndexChanged(const QString &arg1);
 
+	void on_btn_send_bye_clicked();
+
 private:
 	void parse_response(const QByteArray& response_raw);
 	Peer* get_active_peer();

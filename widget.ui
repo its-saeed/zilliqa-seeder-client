@@ -85,7 +85,7 @@
       </widget>
      </item>
      <item>
-      <widget class="QPushButton" name="pushButton_3">
+      <widget class="QPushButton" name="btn_send_bye">
        <property name="text">
         <string>Send Goodbye (unregister)</string>
        </property>
@@ -111,7 +111,7 @@
      <item>
       <layout class="QHBoxLayout" name="horizontalLayout_2">
        <item>
-        <widget class="QLabel" name="label_4">
+        <widget class="QLabel" name="lbl_connection">
          <property name="text">
           <string>%1 connections:</string>
          </property>

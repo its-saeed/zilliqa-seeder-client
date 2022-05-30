@@ -119,7 +119,17 @@ void Widget::on_btn_send_status_clicked()
 	peer->send_status();
 }
 
-void Widget::on_cmb_peers_currentIndexChanged(const QString &)
+void Widget::on_cmb_peers_currentIndexChanged(const QString &address)
 {
 	update_peer_connections_widget();
+	ui->lbl_connection->setText(QString("%1 connections").arg(address));
+}
+
+void Widget::on_btn_send_bye_clicked()
+{
+	Peer* peer = get_active_peer();
+	if (peer == nullptr)
+		return;
+
+	peer->send_goodbye();
 }
