@@ -1,27 +1,39 @@
 namespace Seeder;
 
 table HelloRequest {
-    address: string;
+    address: string (required);
 }
 
 table ByeRequest {
-    address: string;
+    address: string (required);
 }
 
 table PeerStatusRequest {
-    address: string;
+    address: string (required);
     peer_current_connections: [string];
+    last_alive: ulong;  // To make it easily testable
 }
 
-struct GetPeersRequest {
+struct GetElitedPeersRequest {
     number_of_peers: byte;
 }
 
-union RequestType { HelloRequest, PeerStatusRequest, GetPeersRequest, ByeRequest }
+struct GetPeersByLastAliveRequest {
+    number_of_peers: byte;
+    last_alive_since: ulong;    // Optionally can be set to query peers based on ther aliveness.
+}
+
+union RequestType { 
+    HelloRequest,
+    PeerStatusRequest,
+    GetElitedPeersRequest,
+    GetPeersByLastAliveRequest,
+    ByeRequest
+}
 
 table Request {
     id: ushort;
-    request: RequestType;
+    request: RequestType (required);
 }
 
 root_type Request;

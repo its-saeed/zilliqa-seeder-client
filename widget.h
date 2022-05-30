@@ -35,9 +35,11 @@ private slots:
 
 	void on_btn_send_bye_clicked();
 
+	void on_btn_get_alive_peers_clicked();
+
 private:
 	void parse_response(const QByteArray& response_raw);
-	Peer* get_active_peer();
+	Peer* get_selected_peer();
 	Ui::Widget *ui;
 	std::map<std::string, Peer*> peers;
 };

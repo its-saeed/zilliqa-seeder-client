@@ -21,7 +21,7 @@ Widget::~Widget()
 
 void Widget::on_btn_send_hello_clicked()
 {
-	Peer* peer = get_active_peer();
+	Peer* peer = get_selected_peer();
 	if (peer == nullptr)
 		return;
 
@@ -30,11 +30,11 @@ void Widget::on_btn_send_hello_clicked()
 
 void Widget::on_btn_get_peers_clicked()
 {
-	Peer* peer = get_active_peer();
+	Peer* peer = get_selected_peer();
 	if (peer == nullptr)
 		return;
 
-	peer->get_peers();
+	peer->send_get_elited_peers();
 }
 
 void Widget::on_btn_add_to_connected_clicked()
@@ -42,7 +42,7 @@ void Widget::on_btn_add_to_connected_clicked()
 	if (ui->lstw_available_nodes->currentItem() == nullptr)
 		return;
 
-	Peer* peer = get_active_peer();
+	Peer* peer = get_selected_peer();
 	if (peer == nullptr)
 		return;
 
@@ -54,7 +54,7 @@ void Widget::on_btn_remove_from_connected_clicked()
 {
 	const std::string selected_connection = ui->lstw_connected_nodes->currentItem()->text().toStdString();
 
-	Peer* peer = get_active_peer();
+	Peer* peer = get_selected_peer();
 	if (peer == nullptr)
 		return;
 
@@ -78,7 +78,7 @@ void Widget::log_it(const QString &string)
 	ui->pte_logs->appendPlainText(string);
 }
 
-Peer* Widget::get_active_peer()
+Peer* Widget::get_selected_peer()
 {
 	const std::string selected_address = ui->cmb_peers->currentText().toStdString();
 
@@ -95,7 +95,7 @@ void Widget::update_peer_connections_widget()
 {
 	ui->lstw_connected_nodes->clear();
 
-	Peer* peer = get_active_peer();
+	Peer* peer = get_selected_peer();
 	if (peer == nullptr)
 		return;
 
@@ -112,24 +112,40 @@ void Widget::update_peer_connections_widget()
 
 void Widget::on_btn_send_status_clicked()
 {
-	Peer* peer = get_active_peer();
+	const QDateTime last_alive = ui->dte_last_alive->dateTime();
+	Peer* peer = get_selected_peer();
 	if (peer == nullptr)
 		return;
 
-	peer->send_status();
+	peer->send_status(last_alive);
 }
 
 void Widget::on_cmb_peers_currentIndexChanged(const QString &address)
 {
+	const QDateTime last_alive = ui->dte_last_alive->dateTime();
+	Peer* peer = get_selected_peer();
+	if (peer == nullptr)
+		return;
+
 	update_peer_connections_widget();
 	ui->lbl_connection->setText(QString("%1 connections").arg(address));
+	ui->lbl_last_alive->setText(peer->get_last_alive().toString());
 }
 
 void Widget::on_btn_send_bye_clicked()
 {
-	Peer* peer = get_active_peer();
+	Peer* peer = get_selected_peer();
 	if (peer == nullptr)
 		return;
 
 	peer->send_goodbye();
+}
+
+void Widget::on_btn_get_alive_peers_clicked()
+{
+	Peer* peer = get_selected_peer();
+	if (peer == nullptr)
+		return;
+
+	peer->send_get_alive_peers(ui->dte_alive_since->dateTime().toSecsSinceEpoch());
 }

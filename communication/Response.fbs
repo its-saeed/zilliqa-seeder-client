@@ -10,11 +10,15 @@ table HelloResponse {
     availability_interval: byte;        // Hey Client! Please send me your availability based on this interval.
 }
 
-table GetPeersResponse {
+table GetElitedPeersResponse {
     active_peers: [string];
 }
 
-union ResponseType { HelloResponse, GetPeersResponse}
+table GetAlivePeersResponse {
+    alive_peers: [string];
+}
+
+union ResponseType { HelloResponse, GetElitedPeersResponse, GetAlivePeersResponse }
 
 table Response {
     id: ushort;

@@ -11,8 +11,11 @@ namespace Seeder {
 struct HelloResponse;
 struct HelloResponseBuilder;
 
-struct GetPeersResponse;
-struct GetPeersResponseBuilder;
+struct GetElitedPeersResponse;
+struct GetElitedPeersResponseBuilder;
+
+struct GetAlivePeersResponse;
+struct GetAlivePeersResponseBuilder;
 
 struct Response;
 struct ResponseBuilder;
@@ -50,32 +53,35 @@ inline const char *EnumNameHelloRequestResult(HelloRequestResult e) {
 enum ResponseType : uint8_t {
   ResponseType_NONE = 0,
   ResponseType_HelloResponse = 1,
-  ResponseType_GetPeersResponse = 2,
+  ResponseType_GetElitedPeersResponse = 2,
+  ResponseType_GetAlivePeersResponse = 3,
   ResponseType_MIN = ResponseType_NONE,
-  ResponseType_MAX = ResponseType_GetPeersResponse
+  ResponseType_MAX = ResponseType_GetAlivePeersResponse
 };
 
-inline const ResponseType (&EnumValuesResponseType())[3] {
+inline const ResponseType (&EnumValuesResponseType())[4] {
   static const ResponseType values[] = {
     ResponseType_NONE,
     ResponseType_HelloResponse,
-    ResponseType_GetPeersResponse
+    ResponseType_GetElitedPeersResponse,
+    ResponseType_GetAlivePeersResponse
   };
   return values;
 }
 
 inline const char * const *EnumNamesResponseType() {
-  static const char * const names[4] = {
+  static const char * const names[5] = {
     "NONE",
     "HelloResponse",
-    "GetPeersResponse",
+    "GetElitedPeersResponse",
+    "GetAlivePeersResponse",
     nullptr
   };
   return names;
 }
 
 inline const char *EnumNameResponseType(ResponseType e) {
-  if (flatbuffers::IsOutRange(e, ResponseType_NONE, ResponseType_GetPeersResponse)) return "";
+  if (flatbuffers::IsOutRange(e, ResponseType_NONE, ResponseType_GetAlivePeersResponse)) return "";
   const size_t index = static_cast<size_t>(e);
   return EnumNamesResponseType()[index];
 }
@@ -88,8 +94,12 @@ template<> struct ResponseTypeTraits<Seeder::HelloResponse> {
   static const ResponseType enum_value = ResponseType_HelloResponse;
 };
 
-template<> struct ResponseTypeTraits<Seeder::GetPeersResponse> {
-  static const ResponseType enum_value = ResponseType_GetPeersResponse;
+template<> struct ResponseTypeTraits<Seeder::GetElitedPeersResponse> {
+  static const ResponseType enum_value = ResponseType_GetElitedPeersResponse;
+};
+
+template<> struct ResponseTypeTraits<Seeder::GetAlivePeersResponse> {
+  static const ResponseType enum_value = ResponseType_GetAlivePeersResponse;
 };
 
 bool VerifyResponseType(flatbuffers::Verifier &verifier, const void *obj, ResponseType type);
@@ -146,8 +156,8 @@ inline flatbuffers::Offset<HelloResponse> CreateHelloResponse(
   return builder_.Finish();
 }
 
-struct GetPeersResponse FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
-  typedef GetPeersResponseBuilder Builder;
+struct GetElitedPeersResponse FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
+  typedef GetElitedPeersResponseBuilder Builder;
   enum FlatBuffersVTableOffset FLATBUFFERS_VTABLE_UNDERLYING_TYPE {
     VT_ACTIVE_PEERS = 4
   };
@@ -163,39 +173,91 @@ struct GetPeersResponse FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   }
 };
 
-struct GetPeersResponseBuilder {
-  typedef GetPeersResponse Table;
+struct GetElitedPeersResponseBuilder {
+  typedef GetElitedPeersResponse Table;
   flatbuffers::FlatBufferBuilder &fbb_;
   flatbuffers::uoffset_t start_;
   void add_active_peers(flatbuffers::Offset<flatbuffers::Vector<flatbuffers::Offset<flatbuffers::String>>> active_peers) {
-    fbb_.AddOffset(GetPeersResponse::VT_ACTIVE_PEERS, active_peers);
+    fbb_.AddOffset(GetElitedPeersResponse::VT_ACTIVE_PEERS, active_peers);
   }
-  explicit GetPeersResponseBuilder(flatbuffers::FlatBufferBuilder &_fbb)
+  explicit GetElitedPeersResponseBuilder(flatbuffers::FlatBufferBuilder &_fbb)
         : fbb_(_fbb) {
     start_ = fbb_.StartTable();
   }
-  flatbuffers::Offset<GetPeersResponse> Finish() {
+  flatbuffers::Offset<GetElitedPeersResponse> Finish() {
     const auto end = fbb_.EndTable(start_);
-    auto o = flatbuffers::Offset<GetPeersResponse>(end);
+    auto o = flatbuffers::Offset<GetElitedPeersResponse>(end);
     return o;
   }
 };
 
-inline flatbuffers::Offset<GetPeersResponse> CreateGetPeersResponse(
+inline flatbuffers::Offset<GetElitedPeersResponse> CreateGetElitedPeersResponse(
     flatbuffers::FlatBufferBuilder &_fbb,
     flatbuffers::Offset<flatbuffers::Vector<flatbuffers::Offset<flatbuffers::String>>> active_peers = 0) {
-  GetPeersResponseBuilder builder_(_fbb);
+  GetElitedPeersResponseBuilder builder_(_fbb);
   builder_.add_active_peers(active_peers);
   return builder_.Finish();
 }
 
-inline flatbuffers::Offset<GetPeersResponse> CreateGetPeersResponseDirect(
+inline flatbuffers::Offset<GetElitedPeersResponse> CreateGetElitedPeersResponseDirect(
     flatbuffers::FlatBufferBuilder &_fbb,
     const std::vector<flatbuffers::Offset<flatbuffers::String>> *active_peers = nullptr) {
   auto active_peers__ = active_peers ? _fbb.CreateVector<flatbuffers::Offset<flatbuffers::String>>(*active_peers) : 0;
-  return Seeder::CreateGetPeersResponse(
+  return Seeder::CreateGetElitedPeersResponse(
       _fbb,
       active_peers__);
+}
+
+struct GetAlivePeersResponse FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
+  typedef GetAlivePeersResponseBuilder Builder;
+  enum FlatBuffersVTableOffset FLATBUFFERS_VTABLE_UNDERLYING_TYPE {
+    VT_ALIVE_PEERS = 4
+  };
+  const flatbuffers::Vector<flatbuffers::Offset<flatbuffers::String>> *alive_peers() const {
+    return GetPointer<const flatbuffers::Vector<flatbuffers::Offset<flatbuffers::String>> *>(VT_ALIVE_PEERS);
+  }
+  bool Verify(flatbuffers::Verifier &verifier) const {
+    return VerifyTableStart(verifier) &&
+           VerifyOffset(verifier, VT_ALIVE_PEERS) &&
+           verifier.VerifyVector(alive_peers()) &&
+           verifier.VerifyVectorOfStrings(alive_peers()) &&
+           verifier.EndTable();
+  }
+};
+
+struct GetAlivePeersResponseBuilder {
+  typedef GetAlivePeersResponse Table;
+  flatbuffers::FlatBufferBuilder &fbb_;
+  flatbuffers::uoffset_t start_;
+  void add_alive_peers(flatbuffers::Offset<flatbuffers::Vector<flatbuffers::Offset<flatbuffers::String>>> alive_peers) {
+    fbb_.AddOffset(GetAlivePeersResponse::VT_ALIVE_PEERS, alive_peers);
+  }
+  explicit GetAlivePeersResponseBuilder(flatbuffers::FlatBufferBuilder &_fbb)
+        : fbb_(_fbb) {
+    start_ = fbb_.StartTable();
+  }
+  flatbuffers::Offset<GetAlivePeersResponse> Finish() {
+    const auto end = fbb_.EndTable(start_);
+    auto o = flatbuffers::Offset<GetAlivePeersResponse>(end);
+    return o;
+  }
+};
+
+inline flatbuffers::Offset<GetAlivePeersResponse> CreateGetAlivePeersResponse(
+    flatbuffers::FlatBufferBuilder &_fbb,
+    flatbuffers::Offset<flatbuffers::Vector<flatbuffers::Offset<flatbuffers::String>>> alive_peers = 0) {
+  GetAlivePeersResponseBuilder builder_(_fbb);
+  builder_.add_alive_peers(alive_peers);
+  return builder_.Finish();
+}
+
+inline flatbuffers::Offset<GetAlivePeersResponse> CreateGetAlivePeersResponseDirect(
+    flatbuffers::FlatBufferBuilder &_fbb,
+    const std::vector<flatbuffers::Offset<flatbuffers::String>> *alive_peers = nullptr) {
+  auto alive_peers__ = alive_peers ? _fbb.CreateVector<flatbuffers::Offset<flatbuffers::String>>(*alive_peers) : 0;
+  return Seeder::CreateGetAlivePeersResponse(
+      _fbb,
+      alive_peers__);
 }
 
 struct Response FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
@@ -218,8 +280,11 @@ struct Response FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   const Seeder::HelloResponse *response_as_HelloResponse() const {
     return response_type() == Seeder::ResponseType_HelloResponse ? static_cast<const Seeder::HelloResponse *>(response()) : nullptr;
   }
-  const Seeder::GetPeersResponse *response_as_GetPeersResponse() const {
-    return response_type() == Seeder::ResponseType_GetPeersResponse ? static_cast<const Seeder::GetPeersResponse *>(response()) : nullptr;
+  const Seeder::GetElitedPeersResponse *response_as_GetElitedPeersResponse() const {
+    return response_type() == Seeder::ResponseType_GetElitedPeersResponse ? static_cast<const Seeder::GetElitedPeersResponse *>(response()) : nullptr;
+  }
+  const Seeder::GetAlivePeersResponse *response_as_GetAlivePeersResponse() const {
+    return response_type() == Seeder::ResponseType_GetAlivePeersResponse ? static_cast<const Seeder::GetAlivePeersResponse *>(response()) : nullptr;
   }
   bool Verify(flatbuffers::Verifier &verifier) const {
     return VerifyTableStart(verifier) &&
@@ -235,8 +300,12 @@ template<> inline const Seeder::HelloResponse *Response::response_as<Seeder::Hel
   return response_as_HelloResponse();
 }
 
-template<> inline const Seeder::GetPeersResponse *Response::response_as<Seeder::GetPeersResponse>() const {
-  return response_as_GetPeersResponse();
+template<> inline const Seeder::GetElitedPeersResponse *Response::response_as<Seeder::GetElitedPeersResponse>() const {
+  return response_as_GetElitedPeersResponse();
+}
+
+template<> inline const Seeder::GetAlivePeersResponse *Response::response_as<Seeder::GetAlivePeersResponse>() const {
+  return response_as_GetAlivePeersResponse();
 }
 
 struct ResponseBuilder {
@@ -284,8 +353,12 @@ inline bool VerifyResponseType(flatbuffers::Verifier &verifier, const void *obj,
       auto ptr = reinterpret_cast<const Seeder::HelloResponse *>(obj);
       return verifier.VerifyTable(ptr);
     }
-    case ResponseType_GetPeersResponse: {
-      auto ptr = reinterpret_cast<const Seeder::GetPeersResponse *>(obj);
+    case ResponseType_GetElitedPeersResponse: {
+      auto ptr = reinterpret_cast<const Seeder::GetElitedPeersResponse *>(obj);
+      return verifier.VerifyTable(ptr);
+    }
+    case ResponseType_GetAlivePeersResponse: {
+      auto ptr = reinterpret_cast<const Seeder::GetAlivePeersResponse *>(obj);
       return verifier.VerifyTable(ptr);
     }
     default: return true;

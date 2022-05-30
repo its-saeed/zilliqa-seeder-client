@@ -45,9 +45,9 @@ void Peer::parse_response(const QByteArray &response_buffer)
 //		}
 		break;
 	}
-	case Seeder::ResponseType::ResponseType_GetPeersResponse:
+	case Seeder::ResponseType::ResponseType_GetElitedPeersResponse:
 	{
-		auto active_peers_response = response->response_as_GetPeersResponse();
+		auto active_peers_response = response->response_as_GetElitedPeersResponse();
 		auto active_peers = active_peers_response->active_peers();
 		elited_peers.clear();
 
@@ -61,6 +61,20 @@ void Peer::parse_response(const QByteArray &response_buffer)
 			elited_peers.push_back(peer);
 		}
 		emit elited_peers_changed();
+		break;
+	}
+
+	case Seeder::ResponseType::ResponseType_GetAlivePeersResponse:
+	{
+		auto alive_peers_response = response->response_as_GetAlivePeersResponse();
+		auto alive_peers = alive_peers_response->alive_peers();
+
+		log_it("Alive Peers: ");
+		for (size_t i = 0; i < alive_peers->size(); ++i) {
+			const std::string peer = alive_peers->GetAsString(i)->str();
+
+			log_it(QString("%1: %2").arg(i + 1).arg(peer.c_str()));
+		}
 		break;
 	}
 
@@ -112,14 +126,14 @@ void Peer::send_hello()
 	write_data(buffer, size, request_id);
 }
 
-void Peer::get_peers()
+void Peer::send_get_elited_peers()
 {
 	const uint16_t request_id = qrand() & 0xffff;
 	flatbuffers::FlatBufferBuilder builder(1024);
-	auto req = builder.CreateStruct(GetPeersRequest(5));
+	auto req = builder.CreateStruct(GetElitedPeersRequest(5));
 	RequestBuilder request_builder(builder);
 	request_builder.add_id(request_id);
-	request_builder.add_request_type(RequestType_GetPeersRequest);
+	request_builder.add_request_type(RequestType_GetElitedPeersRequest);
 	request_builder.add_request(req.Union());
 	auto orc = request_builder.Finish();
 	builder.Finish(orc);
@@ -129,8 +143,27 @@ void Peer::get_peers()
 	write_data(buffer, size, request_id);
 }
 
-void Peer::send_status()
+void Peer::send_get_alive_peers(time_t since)
 {
+	const uint16_t request_id = qrand() & 0xffff;
+	flatbuffers::FlatBufferBuilder builder(1024);
+	auto req = builder.CreateStruct(GetPeersByLastAliveRequest(5, since));
+	RequestBuilder request_builder(builder);
+	request_builder.add_id(request_id);
+	request_builder.add_request_type(RequestType_GetPeersByLastAliveRequest);
+	request_builder.add_request(req.Union());
+	auto orc = request_builder.Finish();
+	builder.Finish(orc);
+	const uint8_t* buffer = builder.GetBufferPointer();
+	const size_t size = builder.GetSize();
+
+	write_data(buffer, size, request_id);
+}
+
+void Peer::send_status(const QDateTime& alive)
+{
+	this->last_alive = alive;
+
 	const uint16_t request_id = qrand() & 0xffff;
 	flatbuffers::FlatBufferBuilder builder(1000);
 
@@ -140,7 +173,8 @@ void Peer::send_status()
 	}
 
 	auto address_string = builder.CreateString(address);
-	auto request = Seeder::CreatePeerStatusRequest(builder, address_string, builder.CreateVector(active_connections));
+	auto request = Seeder::CreatePeerStatusRequest(builder, address_string,
+			builder.CreateVector(active_connections), last_alive.toSecsSinceEpoch());
 
 	RequestBuilder request_builder(builder);
 	request_builder.add_id(request_id);
